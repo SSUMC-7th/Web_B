@@ -1,0 +1,17 @@
+.movies-container {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: auto;
+  gap: 10px;
+}
+
+.movie-poster {
+  object-fit: contain;
+  height: 200px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.movie-poster:hover {
+  filter: brightness(30%);
+}
