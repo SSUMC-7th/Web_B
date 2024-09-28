@@ -7,7 +7,7 @@ function MovieList({ movies }) {
         <div className="movie-container" key={movie.id}>
           <img
             className="movie-poster"
-            src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
+            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
           />
         </div>
       ))}
