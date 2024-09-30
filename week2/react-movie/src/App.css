@@ -1,0 +1,22 @@
+.movies-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-auto-rows: auto;
+  gap: 20px;
+  justify-items: center;
+}
+
+.movie-container {
+  width: 100%;
+}
+
+.movie-poster {
+  width: 100%;
+  object-fit: cover; /* 이미지가 잘리지 않도록 설정 */
+  border-radius: 10px;
+  transition: filter 0.3s ease-in-out;
+}
+
+.movie-poster:hover {
+  filter: brightness(30%);
+}
