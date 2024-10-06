@@ -27,17 +27,13 @@ const router = createBrowserRouter([
         // 3. 부모의 path가 '/'이니, /를 붙이지 않아도 /movies랑 동일하게 동작한다.
         // /:을 활용해서, 동적으로 바뀌는 부분의 이름을 정의해줍시다.
         path: "movies",
-        element: <MoviesPage />,
+        element: <CategorPage />,
       },
       {
         // 3. 부모의 path가 '/'이니, /를 붙이지 않아도 /movies랑 동일하게 동작한다.
         // /:을 활용해서, 동적으로 바뀌는 부분의 이름을 정의해줍시다.
         path: "movies/:category",
         element: <MoviesPage />,
-      },
-      {
-        path: "category",
-        element: <CategorPage />,
       },
       {
         path: "login",

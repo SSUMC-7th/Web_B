@@ -44,7 +44,7 @@ const Sidebar = () => {
         </Link>
       </MenuItem>
       <MenuItem>
-        <Link to="/category">
+        <Link to="/movies">
           <MdMovie />
           영화
         </Link>

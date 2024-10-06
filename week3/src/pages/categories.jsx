@@ -43,11 +43,35 @@ const CategoryText = styled.div`
 `;
 
 const CategoryPage = () => {
+  const categories = [
+    {
+      id: 1,
+      label: "현재 상영중인",
+      image: category1,
+      category: "now_playing",
+    },
+    { id: 2, label: "인기있는", image: category2, category: "popular" },
+    {
+      id: 3,
+      label: "높은 평가를 받은",
+      image: category3,
+      category: "top_rated",
+    },
+    { id: 4, label: "개봉 예정중인", image: category4, category: "upcoming" },
+  ];
   return (
     <>
       <Title>카테고리</Title>
       <CategoryList>
-        <Categories>
+        {categories.map((category) => (
+          <Categories key={category.id}>
+            <Link to={`/movies/${category.category}`}>
+              <CategoryImg src={category.image} alt={`${category.category}`} />
+              <CategoryText>{category.label}</CategoryText>
+            </Link>
+          </Categories>
+        ))}
+        {/* <Categories>
           <Link to="/movies/now_playing">
             <CategoryImg src={category1} alt="Now Playing" />
             <CategoryText>현재 상영중인</CategoryText>
@@ -70,7 +94,7 @@ const CategoryPage = () => {
             <CategoryImg src={category4} alt="Upcoming" />
             <CategoryText>개봉 예정중인</CategoryText>
           </Link>
-        </Categories>
+        </Categories> */}
       </CategoryList>
     </>
   );
