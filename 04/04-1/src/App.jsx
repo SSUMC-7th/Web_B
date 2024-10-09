@@ -10,6 +10,7 @@ import Login from "./pages/login.jsx";
 import Signin from "./pages/signin.jsx";
 import Search from "./pages/search.jsx";
 import Category from "./pages/category.jsx";
+import MovieDetail from "./pages/moviedetail.jsx";
 
 import Upcoming from "./category/upcoming.jsx";
 import Nowplaying from "./category/nowplaying.jsx";
@@ -61,7 +62,11 @@ const router = createBrowserRouter([
             {
                 path: 'up-coming',
                 element: <Upcoming/>
-            }    
+            },
+            {
+                path: 'movie/:movieID',
+                element: <MovieDetail/>
+            }
         ]
     },
 

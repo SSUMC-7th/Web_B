@@ -1,29 +1,34 @@
 import styled from "styled-components";
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+import useCustomFetch from "../hooks/useCustomFetch";
+import { useNavigate } from "react-router-dom";
 
-const Upcomingplaying = () => {
+const topratedplaying = () => {
 
-    const [upmovies, setupMovies] = useState([])
-    
-    useEffect(() => {
-        const getMovies = async () => {
-            const upmovies = await axios.get('https://api.themoviedb.org/3/movie/upcoming?language=ko-KR&page=1', {
-                headers: {
-                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMTJlNzM5Y2I5ZDkxNzQ3MmE5NTQzYzcwZDUxNzU5ZSIsIm5iZiI6MTcyODE0NzE3My42NzUzODgsInN1YiI6IjY2ZWJhMjg2OWJkNDI1MDQzMDc0NzBkNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Dt4Gksw3Ix0KeghC3-KPVyYcfiQCRHa68sOl48Oo19g',
-                }
-            }) 
-            setupMovies(upmovies.data);
-        }
-        getMovies()
-    }, []);
-    console.log(upmovies);
+    const {data:movies, isLoading, isError} = useCustomFetch(`/top_rated?language=ko-KR`);
+
+    const navigate = useNavigate();
+
+    if (isLoading) {
+        return <div>
+            <StyledLoad>로딩 중 입니다.... 좀만 기다려줘잉</StyledLoad>
+        </div>
+    }
+
+    if (isError) {
+        return <div>
+            <StyledError>에러 떴어요 비상비상!!!!!</StyledError>
+        </div>
+    }
 
     return (
         <MovieList>
-            {upmovies.results && upmovies.results.map(movie => (
+            {movies.data?.results.map(movie => (
                 <MovieItem key={movie.id}>
                     <Movieimg
+                        onClick={() => navigate(`/movie/:${movie.id}`,{
+                            replace: false,
+                            state: {movieID: movie.id}
+                        })}
                         src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
                         alt={movie.title}
                     />
@@ -35,7 +40,7 @@ const Upcomingplaying = () => {
     );
 };
 
-export default Upcomingplaying;
+export default topratedplaying;
 
 const MovieList = styled.ul`
     display: flex;
@@ -68,3 +73,11 @@ const Movieimg = styled.img`
         filter: brightness(0.5);
     }    
 `;
+
+const StyledLoad = styled.h1`
+    color: white;
+`
+
+const StyledError = styled.h1`
+    color: white;
+`
