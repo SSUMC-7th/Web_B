@@ -7,7 +7,7 @@ const MovieList = () => {
             {MOVIES.results.map(movie => (
                 <span key={movie.id}>
                     <img
-                        src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                        src={`${import.meta.env.VITE_IMAGE_API_URL}w200${movie.poster_path}`}
                         className="poster"
                     />
                 </span>
