@@ -2,8 +2,11 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Join = () => {
+    const navigate = useNavigate();
     const schema = yup.object().shape({
         email: yup.string().email('올바른 이메일 형식이 아닙니다. 다시 확인해주세요!').required('이메일을 반드시 입력해주세요.'),
         password: yup.string().required('비밀번호를 반드시 입력해주세요.').min(8, '비밀번호는 8~16자 사이로 입력해주세요.').max(16, '비밀번호는 8~16자 사이로 입력해주세요.'),
@@ -15,13 +18,31 @@ const Join = () => {
         mode: "onChange",
     });
 
-    const onSubmit = (data) => {
-        console.log('폼 데이터 제출');
-        console.log(data);
-    };
+    const handleonSubmit = async (data) => {
+        try {
+            const response = await axios.post('http://localhost:3000/auth/register', {
+                email: data.email,
+                password: data.password,
+                passwordCheck: data.passwordcheck,
+            });
+
+            if (response) {
+                console.log('회원가입 성공');
+                console.log(data);
+                navigate('/login');
+            }
+        } catch (error) {
+            if (error.response) {
+                console.error('회원가입 실패:', error.response.data.message);
+            } else {
+                console.error('회원가입 중 오류 발생:', error.message);
+            }
+        };
+    }
+
 
     return (
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(handleonSubmit)}>
             <Title> 회원가입 </Title>
             <Input type="text" placeholder="이메일을 입력해주세요!" {...register("email")} />
             <ErrorMessage>{errors.email?.message}</ErrorMessage>

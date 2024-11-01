@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { validate } from '../hooks/validate';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 const Login = () => {
+    const navigate = useNavigate();
     const [values, setValues] = useState({
         email: '',
         password: ''
@@ -32,32 +36,61 @@ const Login = () => {
         setInputClick((prev) => ({ ...prev, [name]: true }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (Object.keys(errors).length === 0) {
             console.log('제출된 데이터:', values);
+
+            try {
+
+                const response = await axiosInstance.post('/auth/login', {
+                    email: values.email,
+                    password: values.password,
+                });
+
+                if (response) {
+                    const { accessToken, refreshToken } = response.data;
+
+                    localStorage.setItem('AccessToken', accessToken);
+                    localStorage.setItem('RefreshToken', refreshToken);
+
+
+                    console.log('로그인 성공');
+
+                    navigate('/');
+                    window.location.reload();
+                }
+            } catch (error) {
+                if (error.response) {
+                    console.error('로그인 실패:', error.response.data.message);
+                } else {
+                    console.error('로그인 오류 발생:', error.message);
+                }
+            }
         }
     };
+
 
     return (
         <Form onSubmit={handleSubmit}>
             <Title>로그인</Title>
             <Input
                 type="email"
+                name="email"
                 placeholder="이메일을 입력해주세요!"
                 value={values.email}
                 onChange={handleChange}
                 onFocus={handleFocus}
-
             />
             {inputClick.email && errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
             <Input
                 type="password"
+                name="password"
                 placeholder="비밀번호를 입력해주세요!"
                 value={values.password}
                 onChange={handleChange}
                 onFocus={handleFocus}
-
             />
             {inputClick.password && errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
             <SubmitButton type="submit" disabled={!isValid} value="로그인" />
