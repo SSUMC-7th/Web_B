@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import useUserInfo from "../hooks/useUserInfo";
+import { FaSearch } from "react-icons/fa";
+import { MdMovie } from "react-icons/md";
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -22,7 +24,6 @@ const Navbar = () => {
             setShowUsername('');
         }
     }, [userInfo]);
-
 
     if (userInfoLoading) return <div>로딩 중...</div>;
     if (isError) return <div>유저 정보를 불러오는 중 에러가 발생했습니다.</div>;
@@ -47,9 +48,25 @@ const Navbar = () => {
         navigate('/join');
     };
 
+    const gotoSearch = () => {
+        navigate('/search');
+    };
+
+    const gotoMovie = () => {
+        navigate('/movies');
+    };
+
     return (
         <Nav>
             <Logo onClick={gotoHome}> CHACHA </Logo>
+            <Links>
+                <Find onClick={gotoSearch}>
+                    <FaSearch /> 찾기
+                </Find>
+                <Movie onClick={gotoMovie}>
+                    <MdMovie /> 영화
+                </Movie>
+            </Links>
             <Usermenu>
                 {isLoggedIn ? (
                     <>
@@ -74,6 +91,7 @@ const Nav = styled.nav`
     padding: 20px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 `;
 
 const Logo = styled.div`
@@ -81,10 +99,25 @@ const Logo = styled.div`
     color: red;
     font-size: 20px;
     font-weight: bold;
-    text-align: left;
     cursor: pointer;
-    justify-content: center;
-    align-items: center;
+`;
+
+const Links = styled.div`
+    display: flex;
+    gap: 20px;
+    color: white;
+`;
+
+const Find = styled.div`
+    display: flex;
+    gap: 10px;
+    cursor: pointer;
+`;
+
+const Movie = styled.div`
+    display: flex;
+    gap: 10px;
+    cursor: pointer;
 `;
 
 const Usermenu = styled.div`
@@ -114,7 +147,6 @@ const JoinButton = styled.button`
 
 const UserName = styled.div`
     color: white;
-    border: none;
     margin-top: 3px;
     font-weight: bold;
     font-size: 14px;

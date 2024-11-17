@@ -1,5 +1,6 @@
 import MovieList from "../../components/MovieList/MovieList";
 import useInfinityQuery from "../../hooks/useInfiniteQuery";
+import LoadingSpinner from "../../styles/SkeletonUI";
 
 function NowPlayingPage() {
     const {

@@ -9,10 +9,10 @@ const CategoryPage = () => {
   const navigate = useNavigate();
 
   const categories = [
-    { id: 1, label: "현재 상영중인", image: image1, category: "now_playing" },
-    { id: 2, label: "인기있는", image: image2, category: "popular" },
-    { id: 3, label: "높은 평가를 받은", image: image3, category: "top_rated" },
-    { id: 4, label: "개봉 예정중인", image: image4, category: "upcoming" },
+    { id: 1, label: "현재 상영중인", image: image1, category: "now_playing", number: "1" },
+    { id: 2, label: "인기있는", image: image2, category: "popular", number: "2" },
+    { id: 3, label: "높은 평가를 받은", image: image3, category: "top_rated", number: "3" },
+    { id: 4, label: "개봉 예정중인", image: image4, category: "upcoming", number: "4" }
   ];
 
   const handleCategoryClick = (category) => {
@@ -20,89 +20,125 @@ const CategoryPage = () => {
   };
 
   return (
-    <>
-      <Title> 카테고리</Title>
-      <CategoryGrid>
-        {categories.map((category) => (
-          <CategoryCard
-            key={category.id}
-            onClick={() => handleCategoryClick(category.category)}
-          >
-            <CategoryImage src={category.image} alt={category.label} />
-            <CategoryOverlay>
-              <CategoryLabel>{category.label}</CategoryLabel>
-            </CategoryOverlay>
-          </CategoryCard>
-        ))}
-      </CategoryGrid>
-    </>
+    <PageContainer>
+      <Container>
+        <Title>카테고리</Title>
+        <CategoryGrid>
+          {categories.map((category) => (
+            <CategoryCard
+              key={category.id}
+              onClick={() => handleCategoryClick(category.category)}
+            >
+              <NumberCircle>{category.number}</NumberCircle>
+              <ImageContainer>
+                <CategoryImage src={category.image} alt={category.label} />
+                <Gradient />
+                <CategoryLabel>{category.label}</CategoryLabel>
+                <Overlay />
+              </ImageContainer>
+            </CategoryCard>
+          ))}
+        </CategoryGrid>
+      </Container>
+    </PageContainer>
   );
 };
 
 export default CategoryPage;
 
+const PageContainer = styled.div`
+  background-color: #000;
+  min-height: 100vh;
+  width: 100%;
+`;
+
+const Container = styled.div`
+  padding: 24px;
+  margin: 0 auto;
+`;
+
 const Title = styled.h1`
-  color: black;
-  margin-bottom: 40px;
+  color: #fff;
+  margin-bottom: 32px;
   font-size: 20px;
   font-weight: bold;
-  margin-top: 10px;
-  margin-left: 10px;
 `;
 
 const CategoryGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 0 20px;
+  gap: 16px;
+  
 `;
 
 const CategoryCard = styled.div`
   position: relative;
   cursor: pointer;
+  border-radius: 8px;
   overflow: hidden;
-  border-radius: 15px;
   transition: transform 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
+`;
+
+const NumberCircle = styled.div`
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 32px;
+  height: 32px;
+  background-color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  z-index: 10;
+`;
+
+const ImageContainer = styled.div`
+  position: relative;
+  aspect-ratio: 16/9; //가로 세로 비율 설정하는 속성 16:9 설정
+  border-radius: 8px;
+  overflow: hidden;
 `;
 
 const CategoryImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: fit;
-  border-radius: 15px;
-  transition: filter 0.3s ease;
-  &:hover {
-    filter: brightness(70%);
-  }
+  object-fit: cover;
 `;
 
-const CategoryOverlay = styled.div`
+const Gradient = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+`;
+
+const Overlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
   opacity: 0;
   transition: opacity 0.3s ease;
-  &:hover {
+
+  ${CategoryCard}:hover & {
     opacity: 1;
   }
 `;
 
 const CategoryLabel = styled.h2`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
   color: #fff;
-  font-size: 20px;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 10px 20px;
-  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  z-index: 2;
 `;

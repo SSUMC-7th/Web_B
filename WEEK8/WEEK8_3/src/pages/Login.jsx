@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { validate } from '../hooks/validate';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 import axiosInstance from '../api/axiosInstance';
 
 const Login = () => {
     const navigate = useNavigate();
     const [values, setValues] = useState({
         email: '',
-        password: ''
+        password: '',
     });
     const [errors, setErrors] = useState({});
     const [inputClick, setInputClick] = useState({
@@ -17,15 +18,42 @@ const Login = () => {
     });
     const isValid = Object.keys(errors).length === 0 && values.email && values.password;
 
+    const mutation = useMutation({
+        mutationFn: async (data) => {
+            const response = await axiosInstance.post('/auth/login', {
+                email: data.email,
+                password: data.password,
+            });
+            return response.data;
+        },
+        onSuccess: (data) => {
+            const { accessToken, refreshToken } = data;
+
+            localStorage.setItem('AccessToken', accessToken);
+            localStorage.setItem('RefreshToken', refreshToken);
+
+            console.log('로그인 성공');
+            navigate('/');
+            window.location.reload();
+        },
+        onError: (error) => {
+            if (error.response) {
+                console.error('로그인 실패:', error.response.data.message);
+            } else {
+                console.error('로그인 오류 발생:', error.message);
+            }
+        },
+    });
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         const newValues = {
             ...values,
-            [name]: value
+            [name]: value,
         };
         setValues(newValues);
 
-        // 실시간 유효성 검사
+
         const newErrors = validate(newValues);
         setErrors(newErrors);
     };
@@ -35,38 +63,14 @@ const Login = () => {
         setInputClick((prev) => ({ ...prev, [name]: true }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (Object.keys(errors).length === 0) {
+        if (isValid) {
             console.log('제출된 데이터:', values);
-
-            try {
-                const response = await axiosInstance.post('/auth/login', {
-                    email: values.email,
-                    password: values.password,
-                });
-
-                if (response) {
-                    const { accessToken, refreshToken } = response.data;
-
-                    localStorage.setItem('AccessToken', accessToken);
-                    localStorage.setItem('RefreshToken', refreshToken);
-
-                    console.log('로그인 성공');
-                    navigate('/');
-                    window.location.reload();
-                }
-            } catch (error) {
-                if (error.response) {
-                    console.error('로그인 실패:', error.response.data.message);
-                } else {
-                    console.error('로그인 오류 발생:', error.message);
-                }
-            }
+            mutation.mutate(values);
         }
     };
-
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -89,7 +93,7 @@ const Login = () => {
                 onFocus={handleFocus}
             />
             {inputClick.password && errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
-            <SubmitButton type="submit" disabled={!isValid} value="로그인" />
+            <SubmitButton type="submit" disabled={!isValid || mutation.isLoading} value="로그인" />
         </Form>
     );
 };
@@ -144,3 +148,4 @@ const SubmitButton = styled.input`
         background-color: ${({ disabled }) => (disabled ? 'gray' : '#ff0033')};
     }
 `;
+
