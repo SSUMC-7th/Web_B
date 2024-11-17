@@ -5,10 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import RootLayout from "./layout/root-layout.jsx";
 import HomePage from "./pages/home.jsx";
-import NotFound from "./pages/not-found.jsx";
 import Movies from "./pages/movies.jsx";
 import Login from "./pages/login.jsx";
 import Signin from "./pages/signin.jsx";
+import Notify from "./pages/notify.jsx";
 import Search from "./pages/search/search.jsx";
 import Category from "./pages/category.jsx";
 import MovieDetail from "./pages/moviedetail.jsx";
@@ -76,7 +76,6 @@ function App() {
           handleLogout={handleLogout}
         />
       ),
-      errorElement: <NotFound />,
       children: [
         { index: true, element: <HomePage /> },
         { path: "movies", element: <Movies /> },
@@ -84,6 +83,7 @@ function App() {
           path: "login",
           element: <Login onLoginSuccess={() => fetchUserData()} />,
         },
+        { path: "notify", element: <Notify userEmail={userEmail} /> },
         { path: "signin", element: <Signin /> },
         { path: "search", element: <Search /> },
         { path: "category", element: <Category /> },
