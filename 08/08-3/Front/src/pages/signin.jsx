@@ -4,10 +4,12 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 
 const Signin = () => {
   const navigate = useNavigate();
 
+  // Validation schema using Yup
   const schema = yup.object().shape({
     email: yup
       .string()
@@ -34,8 +36,9 @@ const Signin = () => {
     mode: "onChange",
   });
 
-  const onSubmit = async (data) => {
-    try {
+  // useMutation for sign-up request
+  const signupMutation = useMutation({
+    mutationFn: async (data) => {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/register`,
         {
@@ -44,10 +47,14 @@ const Signin = () => {
           passwordCheck: data.verify,
         }
       );
-      console.log("회원가입 성공:", response.data);
+      return response.data;
+    },
+    onSuccess: () => {
+      console.log("회원가입 성공");
       alert("회원가입이 성공적으로 완료되었습니다!");
       navigate("/login");
-    } catch (error) {
+    },
+    onError: (error) => {
       if (error.response) {
         console.error("서버 오류:", error.response.data);
       } else if (error.request) {
@@ -55,7 +62,11 @@ const Signin = () => {
       } else {
         console.error("요청 설정 오류:", error.message);
       }
-    }
+    },
+  });
+
+  const onSubmit = (data) => {
+    signupMutation.mutate(data); // Trigger the mutation
   };
 
   return (
