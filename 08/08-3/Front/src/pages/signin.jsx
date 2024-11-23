@@ -9,7 +9,6 @@ import { useMutation } from "@tanstack/react-query";
 const Signin = () => {
   const navigate = useNavigate();
 
-  // Validation schema using Yup
   const schema = yup.object().shape({
     email: yup
       .string()
@@ -36,7 +35,6 @@ const Signin = () => {
     mode: "onChange",
   });
 
-  // useMutation for sign-up request
   const signupMutation = useMutation({
     mutationFn: async (data) => {
       const response = await axios.post(
@@ -66,7 +64,7 @@ const Signin = () => {
   });
 
   const onSubmit = (data) => {
-    signupMutation.mutate(data); // Trigger the mutation
+    signupMutation.mutate(data);
   };
 
   return (
