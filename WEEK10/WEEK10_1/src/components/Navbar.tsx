@@ -1,0 +1,157 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import useUserInfo from "../hooks/useUserInfo";
+import { FaSearch } from "react-icons/fa";
+import { MdMovie } from "react-icons/md";
+
+const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [showUsername, setShowUsername] = useState<string>("");
+
+  const token = localStorage.getItem("AccessToken");
+  const {
+    data: userInfo,
+    isError,
+    isLoading: userInfoLoading,
+  } = useUserInfo(token);
+
+  useEffect(() => {
+    if (userInfo) {
+      setIsLoggedIn(true);
+      const { email } = userInfo;
+      const nickname = email.split("@")[0];
+      setShowUsername(nickname);
+    } else {
+      setIsLoggedIn(false);
+      setShowUsername("");
+    }
+  }, [userInfo]);
+
+  if (userInfoLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>유저 정보를 불러오는 중 에러가 발생했습니다.</div>;
+
+  const handleLogout = () => {
+    localStorage.removeItem("AccessToken");
+    setIsLoggedIn(false);
+    setShowUsername("");
+    console.log("로그아웃 성공");
+    navigate("/login");
+  };
+
+  const gotoHome = () => {
+    navigate("/");
+  };
+
+  const gotoLogin = () => {
+    navigate("/login");
+  };
+
+  const gotoJoin = () => {
+    navigate("/join");
+  };
+
+  const gotoSearch = () => {
+    navigate("/search");
+  };
+
+  const gotoMovie = () => {
+    navigate("/movies");
+  };
+
+  return (
+    <Nav>
+      <Logo onClick={gotoHome}> CHACHA </Logo>
+      <Links>
+        <Find onClick={gotoSearch}>
+          <FaSearch /> 찾기
+        </Find>
+        <Movie onClick={gotoMovie}>
+          <MdMovie /> 영화
+        </Movie>
+      </Links>
+      <Usermenu>
+        {isLoggedIn ? (
+          <>
+            <UserName>{showUsername}님 </UserName>
+            <LoginButton onClick={handleLogout}>로그아웃</LoginButton>
+          </>
+        ) : (
+          <>
+            <LoginButton onClick={gotoLogin}>로그인</LoginButton>
+            <JoinButton onClick={gotoJoin}>회원가입</JoinButton>
+          </>
+        )}
+      </Usermenu>
+    </Nav>
+  );
+};
+
+export default Navbar;
+
+const Nav = styled.nav`
+  background-color: #323232;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const Logo = styled.div`
+  display: flex;
+  color: red;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+`;
+
+const Links = styled.div`
+  display: flex;
+  gap: 20px;
+  color: white;
+`;
+
+const Find = styled.div`
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+`;
+
+const Movie = styled.div`
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+`;
+
+const Usermenu = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const LoginButton = styled.button`
+  color: white;
+  background-color: #323232;
+  border: none;
+  cursor: pointer;
+`;
+
+const JoinButton = styled.button`
+  color: white;
+  background-color: red;
+  cursor: pointer;
+  border: none;
+  padding: 6px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #ff5050;
+  }
+`;
+
+const UserName = styled.div`
+  color: white;
+  margin-top: 3px;
+  font-weight: bold;
+  font-size: 14px;
+`;
